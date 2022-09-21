@@ -8,11 +8,13 @@
         <button-send button-title="Далее" :button-can-send=!!inputValue></button-send>
       </div>
     </form>
-    <ul id="example-2">
-      <li v-for="(item) in userList">
-        {{ item.name }}
-      </li>
-    </ul>
+    <div class="overflow-y-auto h-96">
+      <ul>
+        <li v-for="(item) in userList">
+          {{ item.name }}
+        </li>
+      </ul>
+    </div>
   </main>
 </template>
 <script>
@@ -28,7 +30,7 @@ export default {
       url: process.env.VUE_APP_URL+"/forms/register",
       userName: '',
       inputValue: '',
-      userList: '',
+      userList: Array,
     }
   },
   methods:{
@@ -36,8 +38,12 @@ export default {
       e.preventDefault();
       axios
           .post(this.url, {'userName': this.inputValue})
-          .then(this.list())
-          .catch((response) => alert(response))
+          .then(response => {
+            this.list();
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
     },
     list: function () {
       axios
