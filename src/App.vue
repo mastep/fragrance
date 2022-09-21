@@ -1,53 +1,52 @@
 <template>
   <main class="py-6 px-4 sm:p-6 md:py-10 md:px-8 md:w-96 m-auto">
-    <div>
-      <label for="exampleFormControlInput1" class="form-label inline-block mb-2 text-gray-700"
-      ></label>
-      <input
-          v-model="userName" placeholder="Как твоё имя?"
-          @input='evt=>message1=evt.target.value'
-          type="text"
-          class="
-        form-control
-        block
-        w-full
-        px-3
-        py-1.5
-        text-base
-        font-normal
-        text-gray-700
-        bg-white bg-clip-padding
-        border border-solid border-gray-300
-        rounded
-        transition
-        ease-in-out
-        m-0
-        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
-        h-16 text-2xl md:h-auto md:text-base
-      "
-      />
+    <form @submit="register"
+          :action="url"
+          method="post">
+      <input-text name="userName" placeholder="Как твоё имя?" v-model="inputValue"></input-text>
       <div class="text-right">
-        <button-send button-title="Далее" :button-can-send=!!message1></button-send>
+        <button-send button-title="Далее" :button-can-send=!!inputValue></button-send>
       </div>
-    </div>
+    </form>
+    <ul id="example-2">
+      <li v-for="(item) in userList">
+        {{ item.name }}
+      </li>
+    </ul>
   </main>
-
-
-
-
 </template>
 <script>
-
+import axios from 'axios';
 import 'tw-elements';
-import ButtonSend from "@/ButtonSend";
+import ButtonSend from "@/forms/ButtonSend";
+import InputText from "@/forms/InputText";
 
 export default {
-  components: {ButtonSend},
+  components: {InputText, ButtonSend},
   data() {
     return {
+      url: process.env.VUE_APP_URL+"/forms/register",
       userName: '',
-      message1: ""
+      inputValue: '',
+      userList: '',
     }
+  },
+  methods:{
+    register: function (e) {
+      e.preventDefault();
+      axios
+          .post(this.url, {'userName': this.inputValue})
+          .then(this.list())
+          .catch((response) => alert(response))
+    },
+    list: function () {
+      axios
+          .get(this.url)
+          .then((response) => this.userList=response.data.data)
+    }
+  },
+  mounted() {
+    this.list();
   }
 }
 </script>
