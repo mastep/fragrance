@@ -10,7 +10,7 @@
     </form>
     <div class="overflow-y-auto h-96">
       <ul>
-        <li v-for="(item) in userList">
+        <li v-for="(item) in userList" :key="item">
           {{ item.name }}
         </li>
       </ul>
@@ -30,7 +30,7 @@ export default {
       url: process.env.VUE_APP_URL+"/forms/register",
       userName: '',
       inputValue: '',
-      userList: Array,
+      userList: '',
     }
   },
   methods:{
@@ -38,9 +38,7 @@ export default {
       e.preventDefault();
       axios
           .post(this.url, {'userName': this.inputValue})
-          .then(response => {
-            this.list();
-          })
+          .then(setTimeout(this.list, 100))
           .catch(function (error) {
             console.log(error);
           });
