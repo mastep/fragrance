@@ -13,6 +13,7 @@
     "autoprefixer": "^10",
     "core-js": "^3.8.3",
     "postcss": "^8",
+    "socket.io-client": "^4.5.2",
     "tailwindcss": "^3",
     "tw-elements": "^1.0.0-alpha12",
     "vue": "^3.2.13",
