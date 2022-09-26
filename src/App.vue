@@ -19,19 +19,25 @@
 </template>
 <script>
 import axios from 'axios';
+import io from "socket.io-client";
 import 'tw-elements';
 import ButtonSend from "@/forms/ButtonSend";
 import InputText from "@/forms/InputText";
 
 export default {
   components: {InputText, ButtonSend},
-  data() {
+  data: function() {
     return {
       url: process.env.VUE_APP_URL+"/forms/register",
       userName: '',
       inputValue: '',
-      userList: '',
+      userList: [],
+      socket: {},
     }
+  },
+  created() {
+    //connecting to our host
+    this.socket = io("http://188.225.42.19:3000");
   },
   methods:{
     register: function (e) {
@@ -43,14 +49,21 @@ export default {
             console.log(error);
           });
     },
-    list: function () {
+    mycall: function(){
       axios
-          .get(this.url)
-          .then((response) => this.userList=response.data.data)
+        .get('http://188.225.42.19:8000/api/forms/register')
+        .then((res)=>{this.userList= res.data.data})
+    },
+    list: function () {
+      this.socket.emit('chat message', '1');
+      this.socket.on('chat message', (data) => {
+        this.mycall();
+        data;
+      })
     }
   },
   mounted() {
-    this.list();
+    this.mycall();
   }
 }
 </script>
