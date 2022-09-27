@@ -3,6 +3,7 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const axios = require("axios");
 const io = new Server(server, {
     cors: {
         origin: "*",
@@ -10,14 +11,15 @@ const io = new Server(server, {
         credentials: true}
     });
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/express.html');
-});
 
 io.on('connection', (socket) => {
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-        console.log('message: ' + msg);
+    socket.on('eventUpdating', (msg) => {
+        axios
+            .get('http://188.225.42.19:8000/api/forms/register')
+            .then((res)=>{
+                io.emit('eventData', res.data.data)
+                console.log('request');
+            })
     });
 });
 

@@ -44,26 +44,17 @@ export default {
       e.preventDefault();
       axios
           .post(this.url, {'userName': this.inputValue})
-          .then(setTimeout(this.list, 100))
-          .catch(function (error) {
-            console.log(error);
-          });
-    },
-    mycall: function(){
-      axios
-        .get('http://188.225.42.19:8000/api/forms/register')
-        .then((res)=>{this.userList= res.data.data})
+          .then(this.list);
     },
     list: function () {
-      this.socket.emit('chat message', '1');
-      this.socket.on('chat message', (data) => {
-        this.mycall();
-        data;
+      this.socket.emit('eventUpdating');
+      this.socket.on('eventData', (data) => {
+        this.userList=data;
       })
     }
   },
   mounted() {
-    this.mycall();
+    this.list();
   }
 }
 </script>
