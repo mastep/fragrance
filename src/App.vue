@@ -4,6 +4,7 @@
           :action="url"
           method="post">
       <input-text name="userName" placeholder="Как твоё имя?" v-model="inputValue"></input-text>
+      <input-file name="userPhoto" placeholder="Фото" v-model="inputPhoto"></input-file>
       <div class="text-right">
         <button-send button-title="Далее" :button-can-send=!!inputValue></button-send>
       </div>
@@ -11,7 +12,7 @@
     <div class="overflow-y-auto h-96">
       <ul>
         <li v-for="(item) in userList" :key="item">
-          {{ item.name }}
+          <img v-if="!!item.photo" :src="url_img+item.photo" class="rounded w-16 my-2"/> {{item.name}}
         </li>
       </ul>
     </div>
@@ -23,13 +24,16 @@ import io from "socket.io-client";
 import 'tw-elements';
 import ButtonSend from "@/forms/ButtonSend";
 import InputText from "@/forms/InputText";
+import InputFile from "@/forms/InputFile";
 
 export default {
-  components: {InputText, ButtonSend},
+  components: {InputFile, InputText, ButtonSend},
   data: function() {
     return {
+      url_img:process.env.VUE_APP_URL.replace("/api",""),
       url: process.env.VUE_APP_URL+"/forms/register",
       userName: '',
+      inputPhoto: '',
       inputValue: '',
       userList: [],
       socket: {},
@@ -42,8 +46,18 @@ export default {
   methods:{
     register: function (e) {
       e.preventDefault();
+      //alert(this.inputPhoto)
       axios
-          .post(this.url, {'userName': this.inputValue})
+          .post(
+              this.url,
+              {
+                'userName': this.inputValue,
+                'userPhoto': this.inputPhoto,
+              },
+              {
+                'Content-Type' : 'multipart/form-data',
+              }
+          )
           .then(this.list);
     },
     list: function () {
