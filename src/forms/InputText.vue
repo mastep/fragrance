@@ -22,7 +22,7 @@
         ease-in-out
         m-0
         focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
-        h-16 text-2xl md:h-auto md:text-base
+        h-16 md:h-auto text-2xl  md:text-base
       "
   />
 </template>
